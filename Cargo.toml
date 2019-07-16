@@ -8,3 +8,5 @@ edition = "2018"
 
 [dependencies]
 shakmaty-syzygy = "0.12"
+shakmaty = "0.15.0"
+rand = "0.7.0"
