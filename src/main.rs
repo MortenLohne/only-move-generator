@@ -2,7 +2,7 @@ extern crate rand;
 extern crate shakmaty;
 extern crate shakmaty_syzygy;
 
-use shakmaty::{fen, Board, Chess, Color, FromSetup, Piece, Position, Role};
+use shakmaty::{fen, san::San, Board, Chess, Color, FromSetup, Piece, Position, Role};
 use shakmaty_syzygy::{Dtz, Tablebase, Wdl};
 
 use rand::Rng;
@@ -45,12 +45,17 @@ fn main() {
             }
         })
         .for_each(|(pos, wdl, dtz, mv)| match wdl {
-            Wdl::Win => println!("{} hmvc {}; bm {}", fen::epd(&pos), 100 - dtz.0, mv),
+            Wdl::Win => println!(
+                "{} hmvc {}; bm {}",
+                fen::epd(&pos),
+                100 - dtz.0 - 1,
+                San::from_move(&pos, &mv).to_string()
+            ),
             Wdl::Loss => println!(
                 "{} hmvc {}; bm {}",
                 fen::epd(&pos),
-                100 - dtz.0.abs() + 1,
-                mv
+                100 - dtz.0.abs() + 2,
+                San::from_move(&pos, &mv).to_string()
             ),
             _ => unreachable!(),
         });
