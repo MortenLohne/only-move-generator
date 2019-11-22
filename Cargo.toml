@@ -3,6 +3,9 @@ name = "only-move-generator"
 version = "0.1.0"
 authors = ["Morten Lohne <lohnemorten@gmail.com>"]
 edition = "2018"
+repository = "https://github.com/MortenLohne/only-move-generator/"
+readme = "README.md"
+license-file = "LICENSE.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
