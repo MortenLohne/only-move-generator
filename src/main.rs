@@ -15,7 +15,7 @@ fn main() {
     let matches = App::new("Only move generator")
         .version("0.1")
         .author("Morten Lohne")
-        .about("Generate random positions where there is only move that wins, or one move that saves the draw.")
+        .about("Generate random positions where there is only move that wins, or one move that saves the draw.\nEvery position will also have a move that misses the win/draw by one move.")
         .arg(Arg::with_name("syzygypath")
             .help("One or more paths to a directory containing syzygy tablebase. The full set of wdl and dtz files is required, including the tablebases for less than n pieces.")
             .required(true)
@@ -49,13 +49,13 @@ fn main() {
     })
     .for_each(|(pos, wdl, dtz, mv)| match wdl {
         Wdl::Win => println!(
-            "{} hmvc {}; bm {}",
+            "{} hmvc {}; bm {}; ce 10000",
             fen::epd(&pos),
             100 - dtz.0 - 1,
             San::from_move(&pos, &mv).to_string()
         ),
         Wdl::Loss => println!(
-            "{} hmvc {}; bm {}",
+            "{} hmvc {}; bm {}; ce 0",
             fen::epd(&pos),
             100 - dtz.0.abs() + 2,
             San::from_move(&pos, &mv).to_string()
