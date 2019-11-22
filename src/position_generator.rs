@@ -65,7 +65,7 @@ fn generate_random_position<R: Rng>(rng: &mut R, num_pieces: u8) -> Chess {
         }
     }
     for _ in 2..num_pieces {
-        let role = match rng.gen_range(0, 4) {
+        let role = match rng.gen_range(0, 5) {
             0 => Role::Pawn,
             1 => Role::Knight,
             2 => Role::Bishop,
