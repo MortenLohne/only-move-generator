@@ -14,10 +14,16 @@ fn main() {
     let matches = App::new("Only move generator")
         .version("0.1")
         .author("Morten Lohne")
-        .about("Generate random positions where there is only move that wins, or one move that saves the draw")
+        .about("Generate random positions where there is only move that wins, or one move that saves the draw.")
         .arg(Arg::with_name("syzygypath")
+            .help("One or more paths to a directory containing syzygy tablebase. The full set is required, including wdl and dtz, and tablebases for less than n pieces.")
             .required(true)
             .multiple(true))
+        .arg(Arg::with_name("n")
+            .short("n")
+            .help("Number of pieces to generate positions for. The program will only generate positions with exactly n pieces.")
+            .default_value("6")
+            .possible_values(&["3", "4", "5", "6", "7"]))
         .get_matches();
 
     let values: Vec<_> = matches
