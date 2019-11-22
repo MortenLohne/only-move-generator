@@ -1,5 +1,5 @@
 [package]
-name = "move50-edge-case-gen"
+name = "only-move-generator"
 version = "0.1.0"
 authors = ["Morten Lohne <lohnemorten@gmail.com>"]
 edition = "2018"
