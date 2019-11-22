@@ -26,20 +26,26 @@ fn main() {
             .possible_values(&["3", "4", "5", "6", "7"]))
         .get_matches();
 
-    let values: Vec<_> = matches
+    let tb_files: Vec<_> = matches
         .values_of("syzygypath")
         .unwrap()
         .collect();
 
+    let num_pieces: u8 = matches
+        .value_of("n")
+        .unwrap()
+        .parse()
+        .unwrap();
+
     let mut tables = Tablebase::new();
 
-    for value in values {
+    for value in tb_files {
         tables.add_directory(value).unwrap();
     }
 
     let mut rng = rand::thread_rng();
 
-    iter::repeat_with(|| generate_6man_with_eval(&tables, &mut rng))
+    iter::repeat_with(|| generate_random_position_with_eval(&tables, &mut rng, num_pieces))
         .filter(|(_, _, dtz)| dtz.0.abs() > 10 && dtz.0.abs() < 100)
         .filter_map(|(pos, wdl, dtz)| {
             let mut children = pos
@@ -77,8 +83,8 @@ fn main() {
         });
 }
 
-fn generate_6man_with_eval<R: Rng>(tables: &Tablebase<Chess>, rng: &mut R) -> (Chess, Wdl, Dtz) {
-    let pos: Chess = generate_random_6man(rng);
+fn generate_random_position_with_eval<R: Rng>(tables: &Tablebase<Chess>, rng: &mut R, num_pieces: u8) -> (Chess, Wdl, Dtz) {
+    let pos: Chess = generate_random_position(rng, num_pieces);
 
     let wdl = tables.probe_wdl(&pos).unwrap();
 
@@ -87,7 +93,7 @@ fn generate_6man_with_eval<R: Rng>(tables: &Tablebase<Chess>, rng: &mut R) -> (C
     (pos, wdl, dtz)
 }
 
-fn generate_random_6man<R: Rng>(rng: &mut R) -> Chess {
+fn generate_random_position<R: Rng>(rng: &mut R, num_pieces: u8) -> Chess {
     let mut board = Board::empty();
 
     // Set kings
@@ -114,7 +120,7 @@ fn generate_random_6man<R: Rng>(rng: &mut R) -> Chess {
             break;
         }
     }
-    for _ in 0..4 {
+    for _ in 2..num_pieces {
         let role = match rng.gen_range(0, 4) {
             0 => Role::Pawn,
             1 => Role::Knight,
@@ -155,5 +161,5 @@ fn generate_random_6man<R: Rng>(rng: &mut R) -> Chess {
         fullmoves: 1,
     };
 
-    Chess::from_setup(&fen).unwrap_or_else(|_| generate_random_6man(rng))
+    Chess::from_setup(&fen).unwrap_or_else(|_| generate_random_position(rng, num_pieces))
 }
