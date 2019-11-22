@@ -1,9 +1,9 @@
 use rand::Rng;
-use shakmaty_syzygy::{Tablebase, Wdl, Dtz};
-use shakmaty::{Chess, Board, Piece, Color, Role, FromSetup, fen, Move, Position};
+use shakmaty::{fen, Board, Chess, Color, FromSetup, Move, Piece, Position, Role};
+use shakmaty_syzygy::{Dtz, Tablebase, Wdl};
 
 /// Returns the move with lowest depth to zero, or None if there are several moves with the same dtz.
-pub fn get_single_best_reply(tables: &Tablebase<Chess>, pos: &Chess, dtz: Dtz) -> Option<Move>{
+pub fn get_single_best_reply(tables: &Tablebase<Chess>, pos: &Chess, dtz: Dtz) -> Option<Move> {
     let mut children = pos
         .legals()
         .iter()
@@ -23,7 +23,11 @@ pub fn get_single_best_reply(tables: &Tablebase<Chess>, pos: &Chess, dtz: Dtz) -
     }
 }
 
-pub fn generate_random_position_with_eval<R: Rng>(tables: &Tablebase<Chess>, rng: &mut R, num_pieces: u8) -> (Chess, Wdl, Dtz) {
+pub fn generate_random_position_with_eval<R: Rng>(
+    tables: &Tablebase<Chess>,
+    rng: &mut R,
+    num_pieces: u8,
+) -> (Chess, Wdl, Dtz) {
     let pos: Chess = generate_random_position(rng, num_pieces);
 
     let wdl = tables.probe_wdl(&pos).unwrap();
