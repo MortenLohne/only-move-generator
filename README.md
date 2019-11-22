@@ -31,7 +31,7 @@ Compiling requires a [Rust compiler](https://www.rust-lang.org/tools/install). T
 `cargo build --release`
 
 #### Run
-`cargo run --release
+`cargo run --release`
 
 # License
 
