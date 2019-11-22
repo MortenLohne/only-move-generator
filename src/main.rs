@@ -1,25 +1,35 @@
 extern crate rand;
 extern crate shakmaty;
 extern crate shakmaty_syzygy;
+extern crate clap;
 
 use shakmaty::{fen, san::San, Board, Chess, Color, FromSetup, Piece, Position, Role};
 use shakmaty_syzygy::{Dtz, Tablebase, Wdl};
 
 use rand::Rng;
 use std::iter;
+use clap::{Arg, App};
 
 fn main() {
-    let mut tables = Tablebase::new();
-    tables
-        .add_directory("/media/morten/Shared data/Syzygy/6man/dtz")
-        .unwrap();
-    tables
-        .add_directory("/media/morten/Shared data/Syzygy/6man/wdl")
-        .unwrap();
+    let matches = App::new("Only move generator")
+        .version("0.1")
+        .author("Morten Lohne")
+        .about("Generate random positions where there is only move that wins, or one move that saves the draw")
+        .arg(Arg::with_name("syzygypath")
+            .required(true)
+            .multiple(true))
+        .get_matches();
 
-    tables
-        .add_directory("/media/morten/Shared data/Syzygy/syzygy")
-        .unwrap();
+    let values: Vec<_> = matches
+        .values_of("syzygypath")
+        .unwrap()
+        .collect();
+
+    let mut tables = Tablebase::new();
+
+    for value in values {
+        tables.add_directory(value).unwrap();
+    }
 
     let mut rng = rand::thread_rng();
 
