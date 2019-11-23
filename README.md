@@ -11,6 +11,10 @@ In tablebase terms, every position generated is either:
 
 ## Getting started
 
+### Download
+
+Binaries are available for 64-bit Windows and Linux, under [releases](https://github.com/MortenLohne/only-move-generator/releases). For other platforms, see the Compiling section.
+
 ### Prerequisites
 The tool can generate positions with 3-7 pieces, depending on which tablebase you have installed. It requires a *full set* of syzygy tablebases, both wdl and dtz, including the tablebases for less than n pieces. They can be downloaded from a variety of sources, including [https://syzygy-tables.info/](https://syzygy-tables.info/). 
 
