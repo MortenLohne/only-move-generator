@@ -10,7 +10,7 @@ license-file = "LICENSE.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-shakmaty-syzygy = "0.12"
-shakmaty = "0.15.0"
+shakmaty-syzygy = "0.13"
+shakmaty = "0.16.0"
 rand = "0.7.0"
 clap = "2.33"
