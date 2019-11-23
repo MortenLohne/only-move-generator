@@ -15,7 +15,7 @@ use clap::{App, Arg};
 
 fn main() {
     let matches = App::new("Only move generator")
-        .version("0.1")
+        .version("0.2.0")
         .author("Morten Lohne")
         .about("Generate random positions where there is only move that wins, or one move that saves the draw.\nEvery position will also have a move that misses the win/draw by one move.")
         .arg(Arg::with_name("syzygypath")
