@@ -5,11 +5,13 @@ extern crate shakmaty_syzygy;
 
 mod position_generator;
 
+use std::io::ErrorKind;
+use std::iter;
+
 use shakmaty::{fen, san::San};
 use shakmaty_syzygy::{Tablebase, Wdl};
 
 use clap::{App, Arg};
-use std::iter;
 
 fn main() {
     let matches = App::new("Only move generator")
@@ -51,7 +53,15 @@ fn main() {
     let mut tables = Tablebase::new();
 
     for value in tb_file_names {
-        tables.add_directory(value).unwrap();
+        tables
+            .add_directory(value)
+            .unwrap_or_else(|err: std::io::Error| {
+                match err.kind() {
+                    ErrorKind::NotFound => eprintln!("Couldn't find {}: {}", value, err),
+                    _ => eprintln!("Error: Failed to open {}: {:?}", value, err),
+                }
+                std::process::exit(66);
+            });
     }
 
     let mut rng = rand::thread_rng();
