@@ -36,13 +36,12 @@ k5n1/8/r7/5R2/8/b3K3/8/8 b - - hmvc 66; bm Kb7; ce 10000
 ````
 
 ### Compiling 
-Compiling requires a [Rust compiler](https://www.rust-lang.org/tools/install). The project has dependencies hosted on crates.io, so using rustup+cargo is strongly recommended.
+Compiling requires a [Rust compiler](https://www.rust-lang.org/tools/install). The project has dependencies hosted on crates.io, so using cargo (Included in a rustup install) is strongly recommended.
 
 #### Build
 `cargo build --release`
 
-#### Run
-`cargo run --release`
+This will crate an executable in `target/release/`.
 
 # License
 
