@@ -11,6 +11,6 @@ license-file = "LICENSE.md"
 
 [dependencies]
 shakmaty-syzygy = "0.13"
-shakmaty = "0.16.0"
-rand = "0.7.0"
+shakmaty = "0.16"
+rand = "0.7"
 clap = "2.33"
