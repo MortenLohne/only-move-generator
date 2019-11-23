@@ -45,7 +45,7 @@ Compiling requires a [Rust compiler](https://www.rust-lang.org/tools/install). T
 #### Build
 `cargo build --release`
 
-This will crate an executable in `target/release/`.
+This will create an executable in `target/release/`.
 
 # License
 
