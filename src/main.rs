@@ -20,7 +20,7 @@ fn main() {
             .help("One or more paths to a directory containing syzygy tablebase. The full set of wdl and dtz files is required, including the tablebases for less than n pieces.")
             .required(true)
             .multiple(true))
-        .arg(Arg::with_name("n")
+        .arg(Arg::with_name("number of pieces")
             .short("n")
             .help("Number of pieces to generate positions for. Only positions with exactly n pieces will be generated.")
             .default_value("6")
@@ -29,7 +29,7 @@ fn main() {
 
     let tb_file_names: Vec<_> = matches.values_of("syzygypath").unwrap().collect();
 
-    let num_pieces: u8 = matches.value_of("n").unwrap().parse().unwrap();
+    let num_pieces: u8 = matches.value_of("number of pieces").unwrap().parse().unwrap();
 
     let mut tables = Tablebase::new();
 
