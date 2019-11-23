@@ -25,11 +25,28 @@ fn main() {
             .help("Number of pieces to generate positions for. Only positions with exactly n pieces will be generated.")
             .default_value("6")
             .possible_values(&["3", "4", "5", "6", "7"]))
+        .arg(Arg::with_name("minimum dtz")
+            .short("d")
+            .help("Lowest possible dtz in generated positions. Increasing this value makes the positions even more difficult.")
+            .default_value("10"))
         .get_matches();
 
     let tb_file_names: Vec<_> = matches.values_of("syzygypath").unwrap().collect();
 
-    let num_pieces: u8 = matches.value_of("number of pieces").unwrap().parse().unwrap();
+    let num_pieces: u8 = matches
+        .value_of("number of pieces")
+        .unwrap()
+        .parse()
+        .unwrap();
+
+    let dtz_minimum: u16 = matches
+        .value_of("minimum dtz")
+        .unwrap()
+        .parse()
+        .unwrap_or_else(|err| {
+            eprintln!("Failed to parse argument to dtz-minimum: {:?}", err);
+            std::process::exit(64);
+        });
 
     let mut tables = Tablebase::new();
 
@@ -42,7 +59,7 @@ fn main() {
     iter::repeat_with(|| {
         position_generator::generate_random_position_with_eval(&tables, &mut rng, num_pieces)
     })
-    .filter(|(_, _, dtz)| dtz.0.abs() > 10 && dtz.0.abs() < 100)
+    .filter(|(_, _, dtz)| dtz.0.abs() > dtz_minimum as i32 && dtz.0.abs() < 100)
     .filter_map(|(pos, wdl, dtz)| {
         let best_reply = position_generator::get_single_best_reply(&tables, &pos, dtz);
         best_reply.map(|reply| (pos, wdl, dtz, reply))
