@@ -1,23 +1,40 @@
 use rand::Rng;
-use shakmaty::{fen, Board, Chess, Color, FromSetup, Move, Piece, Position, Role};
+use shakmaty::{Board, Chess, Color, FromSetup, Move, Piece, Position, Role};
 use shakmaty_syzygy::{Dtz, Tablebase, Wdl};
+
+#[derive(Clone, Debug)]
+struct Child {
+    mv: Move,
+    dtz: Dtz,
+}
 
 /// Returns the move with lowest depth to zero, or None if there are several moves with the same dtz.
 pub fn get_single_best_reply(tables: &Tablebase<Chess>, pos: &Chess, dtz: Dtz) -> Option<Move> {
     let mut children = pos
         .legals()
         .iter()
+        .filter(|mv| !mv.is_zeroing()) // Since positions with low dtz are not considered here, any zeroing will be bad
         .map(|mv| (mv.clone(), pos.clone().play(mv).unwrap()))
-        .map(|(mv, child_pos)| (mv, tables.probe_dtz(&child_pos).unwrap()))
-        .filter(|(_, child_dtz)| (child_dtz.0 + dtz.0).abs() <= 4)
+        .map(|(mv, child_pos)| Child {
+            mv,
+            dtz: tables.probe_dtz(&child_pos).unwrap(),
+        })
+        .filter(|child| {
+            // Retain child nodes that are either the best response, or win 2 plies slower/lose 2 plies faster.
+            // Dtz lookups may be off-by-one, which makes this somewhat messier than you would like.
+            if dtz.0 > 0 {
+                (child.dtz + dtz) == Dtz(1) || (child.dtz + dtz) == Dtz(-1)
+            } else {
+                (child.dtz + dtz) == Dtz(-1) || (child.dtz + dtz) == Dtz(-3)
+            }
+        })
         .collect::<Vec<_>>();
 
-    children.sort_by_key(|(_, child_dtz)| child_dtz.0);
+    children.sort_by_key(|child| child.dtz);
     children.reverse();
 
-    debug_assert!(!children.is_empty(), "{}: {:?}", fen::fen(pos), dtz);
-    if children.len() > 1 && (children[1].1 + dtz).0.abs() > 2 {
-        Some(children[0].0.clone())
+    if children.len() > 1 && (children[0].dtz - children[1].dtz).0.abs() == 2 {
+        Some(children[0].mv.clone())
     } else {
         None
     }
