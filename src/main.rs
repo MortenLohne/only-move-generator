@@ -3,8 +3,8 @@ extern crate rand;
 extern crate shakmaty;
 extern crate shakmaty_syzygy;
 
-mod position_generator;
 mod cli;
+mod position_generator;
 
 use std::io::ErrorKind;
 use std::iter;
@@ -17,16 +17,14 @@ fn main() {
 
     let mut tables = Tablebase::new();
 
-    for value in &cli_options.tb_file_names {
-        tables
-            .add_directory(value)
-            .unwrap_or_else(|err: std::io::Error| {
-                match err.kind() {
-                    ErrorKind::NotFound => eprintln!("Couldn't find {}: {}", value, err),
-                    _ => eprintln!("Error: Failed to open {}: {:?}", value, err),
-                }
-                std::process::exit(66);
-            });
+    for tb_path in &cli_options.tb_file_names {
+        tables.add_directory(tb_path).unwrap_or_else(|err| {
+            match err.kind() {
+                ErrorKind::NotFound => eprintln!("Couldn't find {}: {}", tb_path, err),
+                _ => eprintln!("Error: Failed to open {}: {:?}", tb_path, err),
+            }
+            std::process::exit(66);
+        });
     }
 
     let mut rng = rand::thread_rng();
